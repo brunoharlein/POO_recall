@@ -1,6 +1,7 @@
 import string
 
 class Alphabet_majuscules:
+    """classe mere attribut qui affiche l'alphabet en majuscule"""
     # classe mère
     def __init__(self):
         self.lettres = string.ascii_uppercase
@@ -8,12 +9,14 @@ class Alphabet_majuscules:
         # ou plus simplement une chaîne avec tout l'alphabet en majuscules
 
 class Alphabet_minuscules(Alphabet_majuscules):
+    """classe fille qui reprend l'attribut de la classe mere en le modifiant en minuscule"""
     # classe fille
     def __init__(self):
         Alphabet_majuscules.__init__(self)
         self.lettres = self.lettres.lower()
 
 class Alphabet_tri(Alphabet_minuscules):
+    """classe petite fille qui utilise l'attribut de la classe fille avec des listes"""
     # classe petite-fille
     def __init__(self):
         Alphabet_minuscules.__init__(self)
