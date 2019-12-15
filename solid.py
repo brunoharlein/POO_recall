@@ -70,3 +70,143 @@ class Animal:
 
 Les méthodes les plus importantes sont conservées dans la classe Animal et utilisées comme façade pour
 les fonctions moindres.
+
+
+
+Open-Closed Principle (Principe ouvert-fermé)
+
+Les entités logicielles (classes, modules, fonctions) doivent être ouvertes pour l'extension, pas pour
+modification.
+
+class Animal:
+    def __init__(self, name: str):
+        self.name = name
+
+    def get_name(self) -> str:
+        pass
+
+animals = [
+    Animal('lion'),
+    Animal('mouse')
+]
+
+def animal_sound(animals: list):
+    for animal in animals:
+        if animal.name == 'lion':
+            print('roar')
+
+        elif animal.name == 'mouse':
+            print('squeak')
+
+animal_sound(animals)
+
+La fonction animal_sound n'est pas conforme au principe ouvert-fermé car :
+elle ne peut pas être fermé contre de nouveaux types d'animaux. Si nous ajoutons un nouvel animal,
+Snake, nous devons modifier la fonction animal_sound. Vous voyez, pour chaque nouvel
+animal, une nouvelle logique est ajoutée à la fonction animal_sound. C'est tout à fait un
+exemple simple. Lorsque votre application grandit et devient complexe, vous verrez
+que la déclaration if serait répétée encore et encore dans le animal_sound
+fonctionner chaque fois qu'un nouvel animal est ajouté, partout dans l'application.
+
+animals = [
+    Animal('lion'),
+    Animal('mouse'),
+    Animal('snake')
+]
+
+def animal_sound(animals: list):
+    for animal in animals:
+        if animal.name == 'lion':
+            print('roar')
+        elif animal.name == 'mouse':
+            print('squeak')
+        elif animal.name == 'snake':
+            print('hiss')
+
+animal_sound(animals)
+
+Comment le rendre (le son animal) conforme à l'OCP?
+
+class Animal:
+    def __init__(self, name: str):
+        self.name = name
+
+    def get_name(self) -> str:
+        pass
+
+    def make_sound(self):
+        pass
+
+
+class Lion(Animal):
+    def make_sound(self):
+        return 'roar'
+
+
+class Mouse(Animal):
+    def make_sound(self):
+        return 'squeak'
+
+
+class Snake(Animal):
+    def make_sound(self):
+        return 'hiss'
+
+
+def animal_sound(animals: list):
+    for animal in animals:
+        print(animal.make_sound())
+
+animal_sound(animals)
+
+La classe Animal a maintenant une méthode virtuelle make_sound. Nous avons chaque animaux hériter la
+Classe animale et implémenter la méthode make_sound.
+Chaque animaux ajoute sa propre mise en œuvre sur la façon dont il fait un bruit dans le
+make_sound. Le animal_sound à travers le tableau des animaux et juste
+appelle sa méthode make_sound.
+Maintenant, si nous ajoutons un nouvel animal, animal_sound n'a pas besoin de changer. Tout ce dont nous avons besoin
+faire est d'ajouter le nouvel animal à la gamme d'animaux.
+animal_sound est désormais conforme au principe OCP.
+
+
+Un autre exemple:
+Imaginons que vous ayez un magasin et que vous offriez une remise de 20% à votre magasin préféré
+clients utilisant cette classe: lorsque vous décidez d'offrir le double de la remise de 20% à
+Clients VIP. Vous pouvez modifier la classe comme ceci:
+
+class Discount:
+    def __init__(self, customer, price):
+        self.customer = customer
+        self.price = price
+
+    def give_discount(self):
+            if self.customer == 'fav':
+                return self.price * 0.2
+            if self.customer == 'vip':
+                return self.price * 0.4
+
+Non, cela échoue au principe OCP. OCP l'interdit. Si nous voulons donner un nouveau
+pourcentage de réduction peut-être, à un diff. type de clients, vous verrez qu’un nouveau
+la logique sera ajoutée.
+Pour le faire suivre le principe OCP, nous ajouterons une nouvelle classe qui étendra
+la remise. Dans cette nouvelle classe, nous implémenterons son nouveau comportement:
+
+class Discount:
+    def __init__(self, customer, price):
+        self.customer = customer
+        self.price = price
+
+    def get_discount(self):
+            return self.price * 0.2
+
+
+class VIPDiscount(Discount):
+    def get_discount(self):
+        return super().get_discount() * 2
+
+Si vous décidez de 80% de réduction pour les clients super VIP, cela devrait être comme ceci:
+Vous voyez, extension sans modification.
+
+class SuperVIPDiscount(VIPDiscount):
+    def get_discount(self):
+        return super().get_discount() * 2
