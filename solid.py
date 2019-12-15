@@ -210,3 +210,59 @@ Vous voyez, extension sans modification.
 class SuperVIPDiscount(VIPDiscount):
     def get_discount(self):
         return super().get_discount() * 2
+
+
+
+Principe de substitution de Liskov (Liskov Substitution Principle)
+Une sous-classe doit être substituable à sa super-classe. L'objectif de ce
+principe consiste à vérifier qu’une sous-classe peut prendre la place de sa
+super classe sans erreurs. Si le code se retrouve à vérifier le type de classe
+alors, il doit avoir violé ce principe.
+Prenons notre exemple animal.
+
+def animal_leg_count(animals: list):
+    for animal in animals:
+        if isinstance(animal, Lion):
+            print(lion_leg_count(animal))
+        elif isinstance(animal, Mouse):
+            print(mouse_leg_count(animal))
+        elif isinstance(animal, Pigeon):
+            print(pigeon_leg_count(animal))
+
+animal_leg_count(animals)
+
+Pour que cette fonction suive le principe LSP, nous suivrons les
+exigences postulées par Steve Fenton:
+Si la super-classe (Animal) a une méthode qui accepte un type de super-classe
+Paramètre (animal). Sa sous-classe (Pigeon) devrait accepter comme argument un
+type super-classe (type Animal) ou type sous-classe (type Pigeon). Si la
+super-classe renvoie un type de super-classe (Animal). Sa sous-classe doit renvoyer un
+type super-classe (type Animal) ou type sous-classe (Pigeon). Maintenant nous pouvons
+réimplémenter la fonction animal_leg_count:
+
+def animal_leg_count(animals: list):
+    for animal in animals:
+        print(animal.leg_count())
+
+animal_leg_count(animals)
+
+La fonction animal_leg_count se soucie moins du type d'Animal passé, elle
+appelle la méthode leg_count. Tout ce qu'il sait, c'est que le paramètre doit être
+Type d'animal, soit la classe animale, soit sa sous-classe.
+La classe Animal doit maintenant implémenter / définir une méthode leg_count. Et
+les sous-classes doivent implémenter la méthode leg_count:
+
+class Animal:
+    def leg_count(self):
+        pass
+
+
+class Lion(Animal):
+    def leg_count(self):
+        pass
+
+Lorsqu'il est passé à la fonction animal_leg_count, il renvoie le nombre de pattes
+pour le lion.
+Vous voyez, animal_leg_count n'a pas besoin de connaître le type d'Animal à retourner
+son nombre de pattes, il appelle simplement la méthode leg_count du type Animal car en
+contractant une sous-classe de classe Animal doit implémenter la fonction leg_count.
