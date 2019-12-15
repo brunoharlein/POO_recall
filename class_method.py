@@ -29,6 +29,8 @@ print(Person.totalObjects)
 
 Person.showcount()
 
+
+
 # cls implique que la méthode appartient à la classe tandis que self implique que la méthode
 # est liée à l'instance de la classe, donc le membre avec cls est accessible par le nom de la classe
 # alors que celui avec self est accessible par l'instance de la classe ...
